@@ -13,9 +13,10 @@ const {
     TextInputStyle,
     Collection,
     Message,
+    ActivityType,
   } = require('discord.js');
   var mysql = require('mysql');
-const { token, sql_host, sql_user, sql_password, sql_database, } = require('./config.json');
+const { token, sql_host, sql_user, sql_password, sql_database } = require('./config.json');
 const { channel } = require('node:diagnostics_channel');
 var nodemailer = require('nodemailer');
 
@@ -152,7 +153,7 @@ for (const folder of commandFolders) {
   
 // set status like someone development this stupid bot right now
 client.once(Events.ClientReady, readyClient => {
-    readyClient.user.setActivity('someone development this stupid bot right now', { type: 'WATCHING' });
+    readyClient.user.setActivity('Someone development me right now <3');
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
