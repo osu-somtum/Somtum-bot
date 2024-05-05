@@ -1,0 +1,11 @@
+{
+    "clientId": "",
+  	"guildId": "",
+    "token" : "",
+    "sql_host" : "",
+    "sql_user" : "",
+    "sql_password" : "",
+    "sql_database" : "",
+    "gmail_user" : "",
+    "gmail_password" : ""
+}

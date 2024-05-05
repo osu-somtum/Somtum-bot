@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@hapi/hapi": "^21.3.9",
+    "discord.js": "^14.14.1",
+    "mailapi": "^1.0.0",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.9.13",
+    "nodemailer-markdown": "^1.0.3"
+  }
+}
