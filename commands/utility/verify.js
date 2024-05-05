@@ -12,7 +12,7 @@ const {
     Collection,
     SlashCommandBuilder,
   } = require('discord.js');
-const { sql_host, sql_user, sql_password, sql_database, gmail_user, gmail_password } = require('../../config.json');
+const { verify_channel, sql_host, sql_user, sql_password, sql_database, gmail_user, gmail_password } = require('../../config.json');
 var mysql = require('mysql');
 var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport({
@@ -95,6 +95,11 @@ module.exports = {
                 .setDescription('Your username')
                 .setRequired(true)),
 	async execute(interaction) {
+        // check if user is in verify channel
+        if (interaction.channel.id !== verify_channel) {
+            interaction.reply('Please use this command in verify channel ;-;');
+            return;
+        }
         console.log(interaction.options.getString('username'));
         module.exports.username = interaction.options.getString('username');
         module.exports.userid = interaction.user.id;
