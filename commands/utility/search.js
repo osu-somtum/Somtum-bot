@@ -190,6 +190,14 @@ module.exports = {
                                         interaction.reply(error);
                                     }
                                     console.log(status)
+                                    let country_emoji = '';
+                                    if (country == '03'){
+                                        country_emoji = '<:flag_03:1236731363097448459>';
+                                    }
+                                    else {
+                                        country_emoji = `:flag_${country}:`;
+                                    }
+                                    
                                     const embed = new EmbedBuilder()
                                         .setTitle(`${info.name} Profile`)
                                         .setURL(`https://${bancho_domain}/u/${info.id}`)
@@ -197,13 +205,13 @@ module.exports = {
                                         .addFields(
                                             { name: 'Status', value: status.toString(), inline: true },
                                             { name: 'Whitelist', value: whitelist.toString(), inline: true},
-                                            { name: `Global Rank (${country_code} :flag_${country}:)`, value: stats[mode_num].rank.toString(), inline: true },
+                                            { name: `Global Rank (${country_code} ${country_emoji})`, value: stats[mode_num].rank.toString(), inline: true },
                                             { name: 'Country Rank', value: stats[mode_num].country_rank.toString(), inline: true },
                                             { name: 'Total Score', value: stats[mode_num].tscore.toString(), inline: true },
                                             { name: 'PP', value: stats[mode_num].pp.toString(), inline: true },
                                             { name: 'Playcount', value: stats[mode_num].plays.toString(), inline: true },
-                                            { name: 'Join Date', value: new Date(info.creation_time * 1000).toUTCString(), inline: true },
-                                            { name: 'Last Seen', value: new Date(info.latest_activity * 1000).toUTCString(), inline: true },
+                                            { name: 'Join Date', value: `<t:${info.creation_time}:F>`, inline: true },
+                                            { name: 'Last Seen', value: `<t:${info.latest_activity}:R>`, inline: true },
                                             { name: 'Lastest Score', value: `[Click Here!](https://${bancho_domain}/scores/${lastest_score_id})`, inline: true },
                                         )
                                         .setDescription('Player infomation in osu!somtum')

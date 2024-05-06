@@ -142,7 +142,7 @@ for (const folder of commandFolders) {
           // insert discord_id to database
           await connectsql();
           await asynqQuery(`UPDATE users SET discord_id = '${verifyjs.userid}' WHERE name = '${verifyjs.username}'`);
-            verifyjs.message.edit(`Now ${verifyjs.username} has been linked to your discord account! (<@${verifyjs.userid}>) <3`);
+            verifyjs.message.edit(`Now ${verifyjs.username} has been linked to your discord account! (<@${verifyjs.userid}>) <3\nPlease use /myprofile to check your profile!`);
             await disconnectsql();
         }
         let thismsg = await interaction.reply(`Verifying...`, { ephemeral: true });
