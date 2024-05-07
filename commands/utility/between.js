@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder} = require('discord.js');
 // We need http for request to bancho!api
 const https = require('https');
-const { bancho_domain } = require('../../config.json');
+const { bancho_domain, debug } = require('../../config.json');
 
 async function getPlayersPP(id, mode) {
     return new Promise((resolve, reject) => {
@@ -14,7 +14,9 @@ async function getPlayersPP(id, mode) {
             res.on('end', () => {
                 const result = JSON.parse(data);
                 if (result.status === 'success') {
+                    if (debug){
                     console.log(result.player.stats[mode].pp);
+                    }
                     const player_pp = result.player.stats[mode].pp;
                     resolve(player_pp);
                 } else {
@@ -51,6 +53,30 @@ async function SearchUsername(username) {
     });
 }
 
+// Get player rank
+async function getPlayersRank(id, mode) {
+    return new Promise((resolve, reject) => {
+        const url = `https://api.${bancho_domain}/v1/get_player_info?id=${id}&scope=all`;
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+            res.on('end', () => {
+                const result = JSON.parse(data);
+                if (result.status === 'success') {
+                    if (debug){
+                    console.log(result.player.stats[mode].rank);
+                    }
+                    const player_rank = result.player.stats[mode].rank;
+                    resolve(player_rank);
+                } else {
+                    reject('Failed to get player status');
+                }
+            });
+        });
+    });
+}
 module.exports = {
 	data: new SlashCommandBuilder()
     .setName('between')
@@ -118,15 +144,18 @@ module.exports = {
     // stats[mode_num].rank is rank of player
 
     // let search username for username1 and username2
+    let user_id1 = 0;
+    let user_id2 = 0;
     try {
-    let user_id1 = await SearchUsername(username1);
+    user_id1 = await SearchUsername(username1);
+    user_id2 = await SearchUsername(username2);
     }
     catch (error) {
         await interaction.reply(`Username of ${username1} not found`);
         return;
     }
     try {
-    let user_id2 = await SearchUsername(username2);
+    
     }
     catch (error) {
         await interaction.reply(`Username of ${username2} not found`);
@@ -134,6 +163,8 @@ module.exports = {
     }
     let player_pp1 = await getPlayersPP(user_id1, mode_num);
     let player_pp2 = await getPlayersPP(user_id2, mode_num);
+    let player_rank1 = await getPlayersRank(user_id1, mode_num);
+    let player_rank2 = await getPlayersRank(user_id2, mode_num);
     // make embed like, {username1} pp: {pp1}, {username2} pp: {pp2}, difference: {difference}
     // if pp1 > pp2, difference = pp1 - pp2, else difference = pp2 - pp1
     // if pp1 > pp2, {username1} is better than {username2}, else {username2} is better than {username1}
@@ -149,8 +180,8 @@ module.exports = {
     const embed = new EmbedBuilder()
         .setTitle(`PP between ${username1} and ${username2}`)
         .addFields(
-            { name: `${username1}`, value: player_pp1.toString() + "pp", inline: true },
-            { name: `${username2}`, value: player_pp2.toString() + "pp", inline: true },
+            { name: `${username1} (#${player_rank1})`, value: player_pp1.toString() + "pp", inline: true },
+            { name: `${username2} (#${player_rank2})`, value: player_pp2.toString() + "pp", inline: true },
             { name: 'Difference', value: difference.toString() + "pp" , inline: true },
             { name: 'Result', value: better, inline: false}
 

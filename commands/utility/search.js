@@ -157,7 +157,9 @@ module.exports = {
                 const result = JSON.parse(data);
                 if (result.status === 'success') {
                     if (result.results >= 1) {
+                        if (debug){
                         console.log(result.result[0])
+                        }
                         const id = result.result[0].id;
                         const url = `https://api.${bancho_domain}/v1/get_player_info?id=${id}&scope=all`;
                         https.get(url, (res) => {
@@ -178,18 +180,51 @@ module.exports = {
                                     // apply to status string
                                     let status = 'Unknown';
                                     let lastest_score_id = '';
-                                    let roles = '';
+                                    let profile_type = "";
+                                    // profile_type is mode to check like if mode_id is 0, profile_type will be osu!Standard, if 1 will be osu!Taiko, if 2 will be osu!Catch, if 3 will be osu!Mania, etc
+                                    switch (mode_num) {
+                                        case 0:
+                                            profile_type = 'osu! Standard';
+                                            break;
+                                        case 1:
+                                            profile_type = 'osu! Taiko';
+                                            break;
+                                        case 2:
+                                            profile_type = 'osu! Catch';
+                                            break;
+                                        case 3:
+                                            profile_type = 'osu! Mania';
+                                            break;
+                                        case 4:
+                                            profile_type = 'osu! Standard (Relax)';
+                                            break;
+                                        case 5:
+                                            profile_type = 'osu! Taiko (Relax)';
+                                            break;
+                                        case 6:
+                                            profile_type = 'osu! Catch (Relax)';
+                                            break;
+                                        case 8:
+                                            profile_type = 'osu! Standard (Autopilot)';
+                                            break;
+                                    }
                                     try {
                                         status = await getPlayerStatus(id);
+                                        if (debug){
                                         console.log(status);
+                                        }
                                         lastest_score_id = await getLatestScore(id, mode_num);
+                                        if (debug){
                                         console.log(lastest_score_id);
                                         console.log(mode_num)
+                                        }
                                         whitelist = await getPlayerWhitelist(id);
                                     } catch (error) {
                                         interaction.reply(error);
                                     }
+                                    if (debug){
                                     console.log(status)
+                                    }
                                     let country_emoji = '';
                                     if (country == '03'){
                                         country_emoji = '<:flag_03:1236731363097448459>';
@@ -199,12 +234,11 @@ module.exports = {
                                     }
                                     
                                     const embed = new EmbedBuilder()
-                                        .setTitle(`${info.name} Profile`)
+                                        .setTitle(`${profile_type} profile for ${info.name}`)
                                         .setURL(`https://${bancho_domain}/u/${info.id}`)
                                         .setThumbnail(`https://a.${bancho_domain}/${info.id}`)
                                         .addFields(
                                             { name: 'Status', value: status.toString(), inline: true },
-                                            { name: 'Whitelist', value: whitelist.toString(), inline: true},
                                             { name: `Global Rank (${country_code} ${country_emoji})`, value: stats[mode_num].rank.toString(), inline: true },
                                             { name: 'Country Rank', value: stats[mode_num].country_rank.toString(), inline: true },
                                             { name: 'Total Score', value: stats[mode_num].tscore.toString(), inline: true },
@@ -215,7 +249,9 @@ module.exports = {
                                             { name: 'Lastest Score', value: `[Click Here!](https://${bancho_domain}/scores/${lastest_score_id})`, inline: true },
                                         )
                                         .setDescription('Player infomation in osu!somtum')
+                                        if (debug){
                                         console.log(embed)
+                                        }
                                     interaction.reply({ embeds: [embed] });
                                 } else {
                                     interaction.reply('Failed to get player info');

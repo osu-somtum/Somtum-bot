@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder} = require('discord.js');
 // We need http for request to bancho!api
 const https = require('https');
-const { bancho_domain } = require('../../config.json');
+const { bancho_domain, debug } = require('../../config.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,7 +20,9 @@ module.exports = {
                 const api_latency = end - start;
                 const { status, counts } = JSON.parse(data);
                 if (status === "success") {
+                    if (debug){
                     console.log(data)
+                    }
                     const embed = new EmbedBuilder()
                         .setTitle(`osu!somtum Server Status`)
                         .addFields(

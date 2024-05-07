@@ -16,10 +16,10 @@ const {
     ActivityType,
   } = require('discord.js');
   var mysql = require('mysql');
-const { token, sql_host, sql_user, sql_password, sql_database } = require('./config.json');
+const { token, sql_host, sql_user, sql_password, sql_database, bancho_domain, debug } = require('./config.json');
 const { channel } = require('node:diagnostics_channel');
 var nodemailer = require('nodemailer');
-
+var https = require('https');
 var con = mysql.createConnection({
   host: sql_host,
   user: sql_user,
@@ -101,13 +101,17 @@ for (const folder of commandFolders) {
   client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.isButton()) {
       if (interaction.customId === 'verification-button') {
+        if (debug = true) {
         console.log("Getting username")
+        }
         const verifyjs = require('./commands/utility/verify.js');
         if (interaction.user.id !== verifyjs.userid) {
             interaction.reply('You are not the one who requested this verification!!!!');
             return;
         }
+        if (debug = true) {
         console.log(verifyjs.username)
+        }
         const modal = new ModalBuilder()
           .setCustomId('verification-modal')
           .setTitle('Verify somtum account with email')
@@ -134,7 +138,9 @@ for (const folder of commandFolders) {
         const response =
           interaction.fields.getTextInputValue('verification-input');
         if (response != verifyjs.sixdigit) {
+          if (debug = true) {
             console.log(response)
+          }
             verifyjs.message.edit('Invalid verification code, please try again ;-;');
             return;
             }
@@ -153,8 +159,27 @@ for (const folder of commandFolders) {
   
 // set status like someone development this stupid bot right now
 client.once(Events.ClientReady, readyClient => {
-    readyClient.user.setActivity('Someone development me right now <3');
+  if (debug){
+    console.warn("Debug mode is enabled!")
+  }
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+    // loop for every 15 seconds
+    // Request https to c.{bancho_domain} and get response time (ms)
+    // and set status to "Looking somtum for  {response time}ms"
+    // if response time > 5000ms set status to "Looking somtum for  {response time}ms, it's too slow!"  
+    set = setInterval(() => {
+        const start = Date.now();
+        https.get(`https://c.${bancho_domain}`, (resp) => {
+            const end = Date.now();
+            const response_time = end - start;
+            if (response_time > 5000) {
+                readyClient.user.setActivity(`Looking somtum for ${response_time}ms, it's too slow!`, { type: ActivityType.Watching });
+            }
+            else {
+                readyClient.user.setActivity(`Looking somtum for ${response_time}ms`, { type: ActivityType.Watching });
+            }
+        });
+    }, 15000);
 });
 
 

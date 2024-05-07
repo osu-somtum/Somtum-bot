@@ -13,11 +13,11 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
   } = require('discord.js');
-const { bancho_domain, sql_host, sql_user, sql_password, sql_database, gmail_user, gmail_password } = require('../../config.json');
+const { bancho_domain, sql_host, sql_user, sql_password, sql_database, debug } = require('../../config.json');
 var mysql = require('mysql');
 // import https
 const https = require('https');
-
+var whitelist = false;
 // function to connect mysql
 function connectsql() {
     return new Promise((resolve, reject) => {
@@ -63,6 +63,27 @@ function disconnectsql() {
     });
 };
 
+// Function to player whitelist https://api.pla-ra.xyz/v1/get_player_whitelist?id={id}
+async function getPlayerWhitelist(id) {
+    return new Promise((resolve, reject) => {
+        const url = `https://api.${bancho_domain}/v1/get_player_whitelist?id=${id}`;
+        https.get(url, (res) => {
+            let data = '';
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
+            res.on('end', () => {
+                const result = JSON.parse(data);
+                if (result.status === 'success') {
+                    resolve(result.whitelist);
+                } else {
+                    reject('Failed to get player whitelist');
+                }
+            });
+        });
+    });
+}
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('myprofile')
@@ -79,7 +100,12 @@ module.exports = {
             return;
         }
         else
+        if (debug){
         console.log(user_id);
+        }
+        // Get player whitelist
+        // https://api.${bancho_domain}/v1/get_player_whitelist?id=${id}
+        whitelist = await getPlayerWhitelist(user_id);
         // make embed like, Your profile: https://{bancho_domain}/u/{user_id}(Show name with clickable link, also include user country), User ID: {user_id}. creation date: {creation_date}, lastest seen: {lastest_seen}
         // to see more information, please use /search {username} command
         // To getting user country, creation date, and lastest seen, we need to use api
@@ -110,7 +136,7 @@ module.exports = {
                     .setTitle(`Your profile: ${player.info.name}`)
                     .setURL(`https://${bancho_domain}/u/${user_id}`)
                     .setThumbnail(`https://a.${bancho_domain}/${user_id}`)
-                    .setDescription(`User ID: ${user_id}\nCountry: ${country_emoji}\nCreation date: <t:${player.info.creation_time}:R>\nLastest seen: <t:${player.info.latest_activity}:R>\nTo see more information, please use /search ${player.info.name} command`)
+                    .setDescription(`User ID: ${user_id}\nCountry: ${country_emoji}\nWhitelist: ${whitelist.toString()}\nCreation date: <t:${player.info.creation_time}:R>\nLastest seen: <t:${player.info.latest_activity}:R>\nTo see more information, please use /search ${player.info.name} command`)
                     // Color lime green
                     .setColor('#00FF00');
                 interaction.reply({ embeds: [embed] });

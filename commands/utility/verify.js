@@ -100,13 +100,17 @@ module.exports = {
             interaction.reply('Please use this command in verify channel ;-;');
             return;
         }
+        if (debug){
         console.log(interaction.options.getString('username'));
+        }
         module.exports.username = interaction.options.getString('username');
         module.exports.userid = interaction.user.id;
         await connectsql();
         // check did userid exist in database (users table, discord_id column), if yes, decline the request and told them to contact support
         const discordid_check = await asynqQuery(`SELECT discord_id FROM users WHERE discord_id = '${module.exports.userid}'`);
+        if (debug){
         console.log(discordid_check);
+        }
         if (discordid_check.length > 0) {
             interaction.reply('You are already linked to somtum account, please contact support if you have any problem :p');
             await disconnectsql();
@@ -114,18 +118,24 @@ module.exports = {
         }
         // check did username exist in database (users table, name column), if yes, select id of user too
         const result = await asynqQuery(`SELECT id FROM users WHERE name = '${module.exports.username}'`);
+        if (debug){
         console.log(result);
+        }
         let id = result[0].id;
         if (result.length = 0) {
             interaction.reply('Username not found, Please check your username again ;-;');
             await disconnectsql();
             return;
         } 
+        if (debug){
         console.log(id)
+        }
         // debug, checking discord_id of user
         // check did discord_id is already exist for this user, if yes, decline the request and told them to contact support
         const result2 = await asynqQuery(`SELECT discord_id FROM users WHERE id = ${id}`);
+        if (debug){
         console.log(result2);
+        }
         var discord_id = result2[0].discord_id;
         if (discord_id !== null) {
             interaction.reply('This username is already linked to discord account ;-;');
@@ -135,18 +145,24 @@ module.exports = {
 
         // getting email of user, if not exist, decline the request and told them to contact support, else make new string for email
         const result3 = await asynqQuery(`SELECT email FROM users WHERE id = ${id}`);
+        if (debug){
         console.log(result3);
+        }
         module.exports.email = result3[0].email;
             email = result3[0].email;
+        if (debug){
         console.log(email)
         console.log("Sending email")
+        }
         var mailOptions = {
             from: gmail_user,
             to: email,
             subject: 'Linking somtum account to discord account',
             text: 'I getting request from someone to link somtum account with discord account!\nyour verification code is ' + sixdigit + '\nPlease input this code to discord to verify your account\nIf you did not request this, just ignore this\n\nBest Regards,\nSomtum Team <3\n\nThis is an automated email, please do not reply to this email.'
           };
+        if (debug){
         console.log(mailOptions);
+        }
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log("Sending fail!" + error);
