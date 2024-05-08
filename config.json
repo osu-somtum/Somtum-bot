@@ -9,5 +9,6 @@
     "sql_database" : "",
     "gmail_user" : "",
     "gmail_password" : "",
-    "bancho_domain" : ""
+    "bancho_domain" : "",
+    "debug" : true
 }
