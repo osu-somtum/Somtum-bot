@@ -18,7 +18,7 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder} = require('discord.js');
 // We need http for request to bancho!api
 const https = require('https');
-const { bancho_domain } = require('../../config.json');
+const { bancho_domain, debug } = require('../../config.json');
 
 var whitelist = false;
 // function to get player status
@@ -239,8 +239,8 @@ module.exports = {
                                         .setThumbnail(`https://a.${bancho_domain}/${info.id}`)
                                         .addFields(
                                             { name: 'Status', value: status.toString(), inline: true },
-                                            { name: `Global Rank (${country_code} ${country_emoji})`, value: stats[mode_num].rank.toString(), inline: true },
-                                            { name: 'Country Rank', value: stats[mode_num].country_rank.toString(), inline: true },
+                                            { name: `Global Rank`, value: stats[mode_num].rank.toString(), inline: true },
+                                            { name: `Country Rank (${country_code} ${country_emoji})`, value: stats[mode_num].country_rank.toString(), inline: true },
                                             { name: 'Total Score', value: stats[mode_num].tscore.toString(), inline: true },
                                             { name: 'PP', value: stats[mode_num].pp.toString(), inline: true },
                                             { name: 'Playcount', value: stats[mode_num].plays.toString(), inline: true },

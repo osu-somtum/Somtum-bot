@@ -101,7 +101,7 @@ for (const folder of commandFolders) {
   client.on(Events.InteractionCreate, async (interaction) => {
     if (interaction.isButton()) {
       if (interaction.customId === 'verification-button') {
-        if (debug = true) {
+        if (debug) {
         console.log("Getting username")
         }
         const verifyjs = require('./commands/utility/verify.js');
@@ -109,7 +109,7 @@ for (const folder of commandFolders) {
             interaction.reply('You are not the one who requested this verification!!!!');
             return;
         }
-        if (debug = true) {
+        if (debug) {
         console.log(verifyjs.username)
         }
         const modal = new ModalBuilder()
@@ -138,7 +138,7 @@ for (const folder of commandFolders) {
         const response =
           interaction.fields.getTextInputValue('verification-input');
         if (response != verifyjs.sixdigit) {
-          if (debug = true) {
+          if (debug) {
             console.log(response)
           }
             verifyjs.message.edit('Invalid verification code, please try again ;-;');
@@ -148,7 +148,7 @@ for (const folder of commandFolders) {
           // insert discord_id to database
           await connectsql();
           await asynqQuery(`UPDATE users SET discord_id = '${verifyjs.userid}' WHERE name = '${verifyjs.username}'`);
-            verifyjs.message.edit(`Now ${verifyjs.username} has been linked to your discord account! (<@${verifyjs.userid}>) <3\nPlease use /myprofile to check your profile!`);
+            verifyjs.message.edit(`Now ${verifyjs.username} has been linked to your discord account! (<@${verifyjs.userid}>) <3\nPlease use /myprofile to check your profile!\nNotice: Press verify with email again is no longer required!`);
             await disconnectsql();
         }
         let thismsg = await interaction.reply(`Verifying...`, { ephemeral: true });

@@ -148,14 +148,13 @@ module.exports = {
     let user_id2 = 0;
     try {
     user_id1 = await SearchUsername(username1);
-    user_id2 = await SearchUsername(username2);
     }
     catch (error) {
         await interaction.reply(`Username of ${username1} not found`);
         return;
     }
     try {
-    
+        user_id2 = await SearchUsername(username2);
     }
     catch (error) {
         await interaction.reply(`Username of ${username2} not found`);
@@ -172,10 +171,10 @@ module.exports = {
     let better = '';
     if (player_pp1 > player_pp2) {
         difference = player_pp1 - player_pp2;
-        better = `So that mean ${username2} need ${difference}pp to beat ${username1}`;
+        better = `So that mean ${username2} needs ${difference}pp to beat ${username1}`;
     } else {
         difference = player_pp2 - player_pp1;
-        better = `So that mean ${username1} need ${difference}pp to beat ${username2}`;
+        better = `So that mean ${username1} needs ${difference}pp to beat ${username2}`;
     }
     const embed = new EmbedBuilder()
         .setTitle(`PP between ${username1} and ${username2}`)
