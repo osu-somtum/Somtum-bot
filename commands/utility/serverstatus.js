@@ -30,8 +30,6 @@ module.exports = {
                             { name: 'Registered Players', value: counts.total.toString(), inline: true },
                             { name: 'API Latency', value: `${api_latency}ms`, inline: true },
                         )
-                        // add description, Power by bancho.py
-                        .setDescription(`Power by bancho.py`)
                        // lime green
                         .setColor("#32CD32")
                     interaction.reply({ embeds: [embed] });
