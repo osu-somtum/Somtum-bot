@@ -10,5 +10,5 @@
     "gmail_user" : "",
     "gmail_password" : "",
     "bancho_domain" : "",
-    "debug" : true
+    "debug" : false
 }

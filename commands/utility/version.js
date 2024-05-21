@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder} = require('discord.js');
-let version = "0.2.0-dev";
+let version = "0.2.5-dev";
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('botversion')
@@ -10,7 +10,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle(`Somtum-Bot version ${version}`)
             .setDescription(`[Source code of Somtum-Bot](https://github.com/osu-somtum/Somtum-bot)`)
-            .setColor('#0099ff');
+            // lime green color
+            .setColor("#32CD32")
         await interaction.reply({ embeds: [embed] });
 	},
 };
