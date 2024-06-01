@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder} = require('discord.js');
-let version = "0.2.5-dev";
+let version = "0.3.0-dev";
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('botversion')
